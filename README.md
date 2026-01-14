@@ -4,139 +4,112 @@ A modern portfolio website built with React, TypeScript, and Vite, featuring an 
 
 ## Features
 
+# Joshua Godalle - Portfolio
+
+A modern portfolio website built with React, TypeScript, and Vite. The site includes an AI-powered chatbot and showcases projects, experience, and certifications.
+
+## Features
+
 - 🎨 Modern, responsive design with dark mode support
-- 💬 AI-powered chatbot using Gemini free API
-- 📱 Fully responsive layout
-- ⚡ Fast and optimized with Vite
-- 🎯 Showcase of projects, experience, and certifications
+- 💬 AI-powered chatbot (requires Google Gemini API key)
+- 📱 Mobile-first responsive layout
+- ⚡ Fast dev experience with Vite
 
-## Chatbot Setup
+## Quick Start
 
-The portfolio includes an AI chatbot powered by Google's Gemini API. To enable it:
-
-1. Get your free Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Create a `.env` file in the root directory
-3. Add your API key:
-   ```
-   VITE_GEMINI_API_KEY=your_api_key_here
-   ```
-4. Restart your development server
-
-The chatbot will help answer questions about Joshua's work, experience, and projects.
-
-### Troubleshooting
-
-If you encounter a "model not found" error (404):
-
-1. **Verify your API key**: Make sure your API key is valid and active at [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. **Check model availability**: Some models may not be available in all regions. The chatbot will automatically try multiple models:
-   - `gemini-1.5-flash` (recommended for free tier)
-   - `gemini-1.5-pro`
-   - `gemini-pro`
-3. **Regional restrictions**: The free tier may not be available in all regions. If you're in a restricted region, you may need to enable billing on your Google Cloud project
-4. **API key permissions**: Ensure your API key has the necessary permissions for the Gemini API
-5. **Check console**: Open browser developer tools (F12) and check the console for detailed error messages
-
-The chatbot will automatically try different models if one fails, so it should work with most valid API keys.
-
-## Getting Started
-
-### Installation
+Install dependencies (npm, pnpm or yarn):
 
 ```bash
+pnpm install
+# or
 npm install
 ```
 
-### Development
+Run dev server:
 
 ```bash
+pnpm run dev
+# or
 npm run dev
 ```
 
-### Build
+Build for production:
 
 ```bash
+pnpm run build
+# or
 npm run build
 ```
 
+Preview the production build locally:
+
+```bash
+pnpm run preview
+# or
+npm run preview
+```
+
+## Environment
+
+Create a `.env` file in the project root and add your Gemini key (if you plan to enable the chatbot):
+
+```
+VITE_GEMINI_API_KEY=your_api_key_here
+```
+
+Restart the dev server after editing `.env`.
+
+## Assets & Static Files
+
+- Files placed in `public/` are served from the web root. Example: a file at `public/joshua-icon.jpeg` will be available at `/joshua-icon.jpeg` in the browser.
+- Recommended: put images you import in code into `src/assets/` so the bundler can optimize them (hashing, caching).
+
+Examples:
+
+- Importable (preferred):
+
+```ts
+import joshuaIcon from './assets/joshua-icon.jpeg'
+<img src={joshuaIcon} alt="Joshua" />
+```
+
+- Public folder (no import, served at root):
+
+```html
+<img src="/joshua-icon.jpeg" alt="Joshua" />
+```
+
+Notes:
+- Avoid spaces in filenames (rename `Joshua Icon.jpeg` → `joshua-icon.jpeg`) to prevent URL encoding issues.
+- Use `src/assets` when you want the bundler to handle images and imports.
+
+## Profile Image Behavior
+
+- Default: `src/assets/Profile.jpg` (profile photo).
+- On hover: shows `src/assets/shy-type.png`.
+- If you click the hovered image, it temporarily shows the profile icon (`joshua-icon.jpeg`) while hovered; on mouseleave it reverts to the default `Profile.jpg`.
+
+If you want to change the icon file, put the image in `src/assets/` and update the import in `src/App.tsx`:
+
+```ts
+import joshuaIcon from './assets/joshua-icon.jpeg'
+```
+
+## Chatbot Setup / Troubleshooting
+
+1. Get your Gemini API key from Google AI Studio
+2. Add it to `.env` as `VITE_GEMINI_API_KEY`
+3. Restart the dev server
+
+If you get errors related to models or permissions, check the browser console and verify your API key and model availability in your region.
+
 ## Tech Stack
 
-- React 19
+- React
 - TypeScript
 - Vite
-- Google Gemini AI
 - React Icons
 
 ---
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+If you'd like, I can rename and move `Joshua Icon.jpeg` into `src/assets/` and update `src/App.tsx` imports for you.
