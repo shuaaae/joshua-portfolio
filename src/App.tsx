@@ -212,7 +212,7 @@ function App() {
                 <HiLocationMarker className="location-icon" />
                 Bulan Sorsogon
               </p>
-              <p className="roles">Full Stack Web Developer · Mobile App Developer</p>
+              <p className="roles">Full Stack Web Developer \ Mobile App Developer</p>
               <div className="cta-buttons">
                 <button className="cta-btn-primary" onClick={handleDownloadResume}>
                   <HiDocumentText className="cta-icon" />
