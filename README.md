@@ -1,6 +1,6 @@
 # Joshua Godalle - Portfolio
 
-A modern portfolio website built with React, TypeScript, and Vite, featuring an AI-powered chatbot using Google's Gemini API.
+Ayeo Humans!, This is a modern portfolio website built with React, TypeScript, and Vite, featuring an AI-powered chatbot using Google's Gemini API.
 
 ## Features
 
