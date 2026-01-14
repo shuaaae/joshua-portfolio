@@ -49,13 +49,13 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
     try {
       // Get API key from environment variable or use a default (user should set this)
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY || ''
-      
+
       if (!apiKey) {
         throw new Error('Gemini API key not found. Please set VITE_GEMINI_API_KEY in your .env file.')
       }
 
       const genAI = new GoogleGenerativeAI(apiKey)
-      
+
       // Create context - AI responds as Joshua himself
       const context = `You are Joshua Godalle. Respond naturally and conversationally as if the user is talking directly to you. Use first person (I, me, my) throughout your responses. Be friendly, professional, and authentic.
 
@@ -102,7 +102,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
       // First, try to list available models to find one that works
       let availableModel: string | null = null
       let modelListError: Error | null = null
-      
+
       try {
         // Try to get available models using the REST API
         const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`)
@@ -110,7 +110,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
           const data = await response.json()
           if (data.models && data.models.length > 0) {
             // Find a model that supports generateContent
-            const generateContentModel = data.models.find((m: any) => 
+            const generateContentModel = data.models.find((m: any) =>
               m.supportedGenerationMethods?.includes('generateContent')
             )
             if (generateContentModel) {
@@ -125,7 +125,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
       }
 
       // Try multiple model names in order of preference
-      const modelNames = availableModel 
+      const modelNames = availableModel
         ? [availableModel, 'gemini-1.5-flash-001', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']
         : ['gemini-1.5-flash-001', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']
 
@@ -144,7 +144,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
         } catch (err) {
           lastError = err instanceof Error ? err : new Error(String(err))
           console.log(`Model ${modelName} failed:`, err)
-          
+
           // If SDK fails, try direct REST API as fallback
           if (err instanceof Error && err.message.includes('404')) {
             try {
@@ -162,7 +162,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
                   })
                 }
               )
-              
+
               if (restResponse.ok) {
                 const restData = await restResponse.json()
                 if (restData.candidates && restData.candidates[0]?.content?.parts?.[0]?.text) {
@@ -205,7 +205,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       console.error('Error sending message:', error)
-      
+
       // Fallback message for any connection/API errors
       const errorMessage: Message = {
         role: 'assistant',
@@ -248,7 +248,7 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
             <HiX />
           </button>
         </div>
-        
+
         <div className="chatbot-messages">
           {messages.map((message, index) => (
             <div
@@ -313,7 +313,11 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
               <HiArrowRight />
             </button>
           </div>
-          <p className="chatbot-input-hint">Ask me about my work, experience, or projects!</p>
+
+          <div className="chatbot-input-footer">
+            <p className="chatbot-input-hint">Ask me about my work, experience, or projects!</p>
+            <div className="chatbot-char-count" aria-live="polite">{input.length}/{MAX_CHARACTERS}</div>
+          </div>
         </div>
       </div>
     </>

@@ -515,6 +515,15 @@
   border: 1px solid transparent;
 }
 
+/* Ensure tech tags are visible on the Tech Stack page regardless of theme
+   (some themes or parent containers may change colors). */
+.certificates-page .tech-tag {
+  background-color: #f3f4f6 !important;
+  color: #111 !important;
+  border-color: transparent !important;
+  z-index: 2;
+}
+
 .tech-icon {
   width: 16px;
   height: 16px;
@@ -1052,6 +1061,33 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* Mobile: allow manual horizontal scroll and disable CSS animation (JS will handle auto-scroll) */
+@media (max-width: 640px) {
+  .certificate-gallery {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .certificate-gallery-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Hide the scrollbar but keep touch/drag scrolling available */
+  .certificate-gallery {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .certificate-gallery::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+    height: 0;
+  }
+}
+
 @keyframes scroll-horizontal {
   0% {
     transform: translateX(0) translateZ(0);
@@ -1577,8 +1613,8 @@
   }
 
   .cta-icon {
-    width: 6px;
-    height: 6px;
+    width: 12px;
+    height: 12px;
     flex-shrink: 0;
   }
 
@@ -1930,6 +1966,14 @@
   transform: translateY(20px);
 }
 
+/* Ensure certificate cards on the Tech Stack page are visible by default
+   in case the JS reveal script does not run. This prevents the grid
+   appearing empty while preserving the reveal animation when present. */
+.certificates-page .certificate-card-grid {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 .certificate-card-animate {
   animation: fadeInUp 0.6s ease-out forwards;
 }
@@ -1937,13 +1981,30 @@
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(16px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Global reveal animation for main content children */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.reveal-item.visible {
+  /* smoother, slightly slower reveal */
+  animation: fadeInUp 2000ms cubic-bezier(0.16, 0.84, 0.3, 1) forwards;
+}
+
+/* Optional: provide custom property to stagger items if needed */
+.reveal-item {
+  --reveal-delay: 0ms;
+  animation-delay: var(--reveal-delay);
 }
 
 .app.dark .certificate-card-grid {
@@ -2536,6 +2597,25 @@
   color: #b0b0b0;
 }
 
+/* New: character counter for chatbot input */
+.chatbot-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chatbot-char-count {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.app.dark .chatbot-char-count {
+  color: #b0b0b0;
+}
+
 .chatbot-send {
   padding: 10px;
   background-color: #000000;
@@ -2658,6 +2738,25 @@
     padding: 8px 12px;
     font-size: 12px;
   }
+
+  /* When the footer is visible in the viewport, lift the floating chat
+     and the open chatbot so they don't overlap the footer. Uses the
+     --footer-height variable populated by the IntersectionObserver. */
+  .footer-in-view .floating-chat {
+    /* User requested negative offset so the button sits closer to the footer */
+    bottom: calc(var(--footer-height, 56px) + -25px) !important;
+  }
+
+  .footer-in-view .chatbot-container {
+    /* Reduce the open chatbot height so it sits comfortably above the footer
+       Uses the detected footer height to compute a safe max-height */
+    height: min(calc(60vh - var(--footer-height, 56px)), 520px) !important;
+    max-height: min(calc(60vh - var(--footer-height, 56px)), 520px) !important;
+    /* Ensure the chatbot follows the floating button by adding the
+       floating button offset (-25px) plus the pre-defined floating-chat-space */
+    bottom: calc(var(--footer-height, 56px) + -25px + var(--floating-chat-space, 64px)) !important;
+  }
+
 
   .chatbot-input-container {
     padding: 12px 16px;

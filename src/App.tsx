@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   HiMail,
   HiBriefcase,
@@ -71,6 +71,114 @@ function App() {
     }
   }
 
+  // Observe footer visibility to avoid floating chat covering it on small screens
+  useEffect(() => {
+    const footer = document.querySelector('.footer') as HTMLElement | null
+    if (!footer) return
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          document.documentElement.classList.add('footer-in-view')
+          const height = Math.ceil(entry.boundingClientRect.height || footer.getBoundingClientRect().height)
+          document.documentElement.style.setProperty('--footer-height', `${height}px`)
+        } else {
+          document.documentElement.classList.remove('footer-in-view')
+          document.documentElement.style.removeProperty('--footer-height')
+        }
+      })
+    }, { root: null, threshold: 0.01 })
+
+    observer.observe(footer)
+    return () => observer.disconnect()
+  }, [])
+
+  // Mobile-only: auto-scroll the certificate gallery but allow user drag to pause it
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 640px)')
+    if (!mq.matches) return
+
+    const gallery = document.querySelector('.certificate-gallery') as HTMLElement | null
+    if (!gallery) return
+
+    let rafId: number | null = null
+    let lastTime = performance.now()
+    let isUserInteracting = false
+    const speed = 30 // pixels per second
+
+    function step(now: number) {
+      if (!gallery) return
+      const dt = (now - lastTime) / 1000
+      lastTime = now
+      if (!isUserInteracting) {
+        gallery.scrollLeft += speed * dt
+        if (gallery.scrollLeft >= gallery.scrollWidth - gallery.clientWidth) {
+          // loop back smoothly
+          gallery.scrollLeft = 0
+        }
+      }
+      rafId = requestAnimationFrame(step)
+    }
+
+    // Pause auto-scroll while user touches/drags; resume after interaction ends
+    const onPointerDown = () => {
+      isUserInteracting = true
+    }
+    const resumeAfterDelay = () => {
+      // small delay to avoid immediate resuming while momentum scrolling
+      isUserInteracting = false
+      lastTime = performance.now()
+    }
+
+    gallery.addEventListener('pointerdown', onPointerDown)
+    gallery.addEventListener('touchstart', onPointerDown, { passive: true })
+    gallery.addEventListener('pointerup', resumeAfterDelay)
+    gallery.addEventListener('touchend', resumeAfterDelay)
+    gallery.addEventListener('touchcancel', resumeAfterDelay)
+
+    rafId = requestAnimationFrame(step)
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId)
+      gallery.removeEventListener('pointerdown', onPointerDown)
+      gallery.removeEventListener('touchstart', onPointerDown)
+      gallery.removeEventListener('pointerup', resumeAfterDelay)
+      gallery.removeEventListener('touchend', resumeAfterDelay)
+      gallery.removeEventListener('touchcancel', resumeAfterDelay)
+    }
+  }, [])
+
+  // Sequential reveal for header + children of .main-content on initial load
+  useEffect(() => {
+    const header = document.querySelector('header') as HTMLElement | null
+    const container = document.querySelector('.main-content') as HTMLElement | null
+    if (!container) return
+
+    const mainChildren = Array.from(container.children) as HTMLElement[]
+    const nodes: HTMLElement[] = []
+    if (header) nodes.push(header)
+    nodes.push(...mainChildren)
+
+    // Add base class to each node
+    nodes.forEach((el) => el.classList.add('reveal-item'))
+
+    // Stagger reveal with a slightly longer gap for a smooth entrance
+    const STAGGER = 160 // ms
+    nodes.forEach((el, idx) => {
+      const delay = idx * STAGGER
+      el.style.setProperty('--reveal-delay', `${delay}ms`)
+      window.setTimeout(() => el.classList.add('visible'), delay + 80)
+    })
+
+    return () => {
+      nodes.forEach((el) => {
+        el.classList.remove('reveal-item', 'visible')
+        el.style.removeProperty('--reveal-delay')
+      })
+    }
+  }, [])
+
 
   return (
     <div className={`app ${darkMode ? 'dark' : 'light'}`}>
@@ -104,7 +212,7 @@ function App() {
                 <HiLocationMarker className="location-icon" />
                 Bulan Sorsogon
               </p>
-              <p className="roles">Full Stack Web Developer</p>
+              <p className="roles">Full Stack Web Developer · Mobile App Developer</p>
               <div className="cta-buttons">
                 <button className="cta-btn-primary" onClick={handleDownloadResume}>
                   <HiDocumentText className="cta-icon" />
@@ -166,10 +274,15 @@ function App() {
             {/* Tech Stack Section */}
             <div className="section-container">
               <section className="section">
-                <h2 className="section-title">
-                  <HiCog className="section-icon" />
-                  Tech Stack
-                </h2>
+                <div className="section-header">
+                  <h2 className="section-title">
+                    <HiCog className="section-icon" />
+                    Tech Stack
+                  </h2>
+                  <Link to="/tech-stack" className="view-all">
+                    View All <span className="arrow">&gt;</span>
+                  </Link>
+                </div>
                 <div className="tech-categories">
                   <div className="tech-category">
                     <h3>Frontend</h3>
@@ -231,57 +344,37 @@ function App() {
                         <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mongodb.svg" alt="MongoDB" className="tech-icon tech-icon-mongo" />
                         MongoDB
                       </span>
+                      <span className="tech-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/firebase.svg" alt="Firebase" className="tech-icon" />
+                        Firebase
+                      </span>
+                      <span className="tech-tag">
+                        PocketBase
+                      </span>
                     </div>
                   </div>
                   <div className="tech-category">
-                    <h3>Developer Tools</h3>
+                    <h3>Mobile</h3>
                     <div className="tech-tags">
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/git.svg" alt="Git" className="tech-icon tech-icon-git" />
-                        Git
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/flutter.svg" alt="Flutter" className="tech-icon" />
+                        Flutter
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg" alt="GitHub" className="tech-icon tech-icon-github" />
-                        GitHub
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/dart.svg" alt="Dart" className="tech-icon" />
+                        Dart
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/gitlab.svg" alt="GitLab" className="tech-icon tech-icon-gitlab" />
-                        GitLab
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/react.svg" alt="React Native" className="tech-icon" />
+                        React Native
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/bitbucket.svg" alt="Bitbucket" className="tech-icon tech-icon-bitbucket" />
-                        Bitbucket
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/visualstudiocode.svg" alt="VS Code" className="tech-icon tech-icon-vscode" />
-                        VS Code
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/intellijidea.svg" alt="JetBrains IntelliJ" className="tech-icon tech-icon-intellij" />
-                        JetBrains IntelliJ
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/slack.svg" alt="Slack" className="tech-icon tech-icon-slack" />
-                        Slack
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" className="tech-icon tech-icon-discord" />
-                        Discord
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/microsoftteams.svg" alt="Teams" className="tech-icon tech-icon-teams" />
-                        Teams
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/jira.svg" alt="JIRA" className="tech-icon tech-icon-jira" />
-                        JIRA
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/trello.svg" alt="Trello" className="tech-icon tech-icon-trello" />
-                        Trello
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/expo.svg" alt="Expo" className="tech-icon" />
+                        Expo
                       </span>
                     </div>
                   </div>
+                  {/* Developer Tools intentionally omitted on homepage — shown on /tech-stack */}
                 </div>
               </section>
             </div>
