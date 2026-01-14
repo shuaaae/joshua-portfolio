@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom'
 import profileImage from './assets/Profile.jpg'
 import shyImage from './assets/shy-type.png'
 import blueBadge from './assets/blue_badge.png'
-import joshuaIcon from './assets/joshua-icon.jpeg'
+import joshuaIcon from '/joshua-icon.jpeg'
 import Chatbot from './components/Chatbot'
 import './App.css'
 
