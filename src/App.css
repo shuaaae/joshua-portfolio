@@ -469,6 +469,23 @@
 }
 
 /* Tech Stack */
+.techstack-inline-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.techstack-animate {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.techstack-animate.is-visible {
+  animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: var(--card-delay, 0s);
+}
+
 .tech-categories {
   display: flex;
   flex-direction: column;
@@ -517,11 +534,19 @@
 
 /* Ensure tech tags are visible on the Tech Stack page regardless of theme
    (some themes or parent containers may change colors). */
-.certificates-page .tech-tag {
+.certificates-page .tech-tag,
+.certificates-page--techstack .tech-tag {
   background-color: #f3f4f6 !important;
   color: #111 !important;
   border-color: transparent !important;
   z-index: 2;
+}
+
+.app.dark .certificates-page--techstack .tech-tag {
+  background-color: #2e2f33 !important;
+  color: #e5e7eb !important;
+  border-color: #3a3d44 !important;
+  box-shadow: none;
 }
 
 .tech-icon {
@@ -566,6 +591,11 @@
   filter: brightness(0) saturate(100%) invert(69%) sepia(81%) saturate(583%) hue-rotate(145deg) brightness(100%) contrast(98%) !important;
 }
 
+.tech-icon-firebase {
+  /* Firebase - Orange/Yellow #FFCA28 */
+  filter: brightness(0) saturate(100%) invert(77%) sepia(42%) saturate(1193%) hue-rotate(330deg) brightness(103%) contrast(99%) !important;
+}
+
 .tech-icon-node {
   /* Node.js - Green #339933 */
   filter: brightness(0) saturate(100%) invert(47%) sepia(91%) saturate(451%) hue-rotate(78deg) brightness(95%) contrast(93%);
@@ -574,6 +604,64 @@
 .tech-icon-python {
   /* Python - Blue #3776AB */
   filter: brightness(0) saturate(100%) invert(42%) sepia(84%) saturate(1214%) hue-rotate(179deg) brightness(100%) contrast(97%);
+}
+
+.tech-icon-flutter {
+  /* Flutter - Blue #02569B */
+  filter: brightness(0) saturate(100%) invert(18%) sepia(98%) saturate(2363%) hue-rotate(189deg) brightness(89%) contrast(103%);
+}
+
+.tech-icon-dart {
+  /* Dart - Blue #0175C2 */
+  filter: brightness(0) saturate(100%) invert(24%) sepia(93%) saturate(2342%) hue-rotate(189deg) brightness(91%) contrast(96%);
+}
+
+.tech-icon-expo {
+  /* Expo - Black/White */
+  filter: brightness(0) saturate(100%);
+}
+
+.app.dark .tech-icon-expo {
+  filter: brightness(0) invert(1);
+}
+
+.tech-icon-git {
+  /* Git - Orange #F05032 */
+  filter: brightness(0) saturate(100%) invert(51%) sepia(96%) saturate(1738%) hue-rotate(341deg) brightness(99%) contrast(96%);
+}
+
+.tech-icon-github {
+  /* GitHub - Dark Gray/Black */
+  filter: brightness(0) saturate(100%);
+}
+
+.app.dark .tech-icon-github {
+  filter: brightness(0) invert(1);
+}
+
+.tech-icon-gitlab {
+  /* GitLab - Orange/Purple */
+  filter: brightness(0) saturate(100%) invert(55%) sepia(72%) saturate(1395%) hue-rotate(334deg) brightness(101%) contrast(92%);
+}
+
+.tech-icon-bitbucket {
+  /* Bitbucket - Blue */
+  filter: brightness(0) saturate(100%) invert(32%) sepia(94%) saturate(1494%) hue-rotate(198deg) brightness(94%) contrast(101%);
+}
+
+.tech-icon-vscode {
+  /* VS Code - Blue */
+  filter: brightness(0) saturate(100%) invert(44%) sepia(94%) saturate(839%) hue-rotate(176deg) brightness(96%) contrast(102%);
+}
+
+.tech-icon-trello {
+  /* Trello - Blue */
+  filter: brightness(0) saturate(100%) invert(34%) sepia(98%) saturate(1210%) hue-rotate(183deg) brightness(94%) contrast(98%);
+}
+
+.tech-icon-jira {
+  /* Jira - Blue */
+  filter: brightness(0) saturate(100%) invert(34%) sepia(88%) saturate(1347%) hue-rotate(185deg) brightness(93%) contrast(101%);
 }
 
 .tech-icon-php {
@@ -1968,16 +2056,20 @@
   transform: translateY(20px);
 }
 
-/* Ensure certificate cards on the Tech Stack page are visible by default
-   in case the JS reveal script does not run. This prevents the grid
-   appearing empty while preserving the reveal animation when present. */
-.certificates-page .certificate-card-grid {
-  opacity: 1 !important;
-  transform: none !important;
+/* Keep Tech Stack page cards visible (no scroll reveal there) */
+.certificates-page--techstack .certificate-card-grid {
+  opacity: 1;
+  transform: none;
 }
 
 .certificate-card-animate {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.certificate-card-animate.is-visible {
   animation: fadeInUp 0.6s ease-out forwards;
+  animation-delay: var(--card-delay, 0s);
 }
 
 @keyframes fadeInUp {

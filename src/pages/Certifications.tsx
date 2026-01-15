@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { HiArrowLeft } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
 import '../App.css'
@@ -30,10 +31,42 @@ const allCertificates = [
 ]
 
 function Certifications() {
+  const [darkMode] = useState(() => {
+    const stored = localStorage.getItem('theme')
+    return stored === 'dark'
+  })
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const cards = Array.from(
+      document.querySelectorAll('.certificate-card-animate')
+    ) as HTMLElement[]
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          const el = entry.target as HTMLElement
+          const cardIndex = Number(el.dataset.index ?? '0')
+          el.style.setProperty('--card-delay', `${cardIndex * 120}ms`)
+          el.classList.add('is-visible')
+          observer.unobserve(el)
+        })
+      },
+      { threshold: 0.2 }
+    )
+
+    cards.forEach((card) => observer.observe(card))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode)
+    document.documentElement.classList.toggle('light', !darkMode)
+  }, [darkMode])
+
   return (
-    <div className="app light">
+    <div className={`app ${darkMode ? 'dark' : 'light'}`}>
       <div className="certificates-page">
         <div className="certificates-page-header">
           <button 
@@ -50,13 +83,18 @@ function Certifications() {
             <div 
               key={index} 
               className="certificate-card-grid certificate-card-animate"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              data-index={index}
             >
               <h3>{cert.title}</h3>
               <p>{cert.issuer}</p>
             </div>
           ))}
         </div>
+
+        <footer className="footer">
+          <div className="footer-divider"></div>
+          <p className="footer-text">© 2025 Joshua Godalle. All rights reserved.</p>
+        </footer>
       </div>
     </div>
   )

@@ -22,7 +22,10 @@ import Chatbot from './components/Chatbot'
 import './App.css'
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = localStorage.getItem('theme')
+    return stored === 'dark'
+  })
   const [isProfileHovered, setIsProfileHovered] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [profileClickedIcon, setProfileClickedIcon] = useState(false)
@@ -179,6 +182,11 @@ function App() {
     }
   }, [])
 
+
+  useEffect(() => {
+    const theme = darkMode ? 'dark' : 'light'
+    localStorage.setItem('theme', theme)
+  }, [darkMode])
 
   return (
     <div className={`app ${darkMode ? 'dark' : 'light'}`}>
@@ -341,35 +349,32 @@ function App() {
                         PostgreSQL
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mongodb.svg" alt="MongoDB" className="tech-icon tech-icon-mongo" />
-                        MongoDB
-                      </span>
-                      <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/firebase.svg" alt="Firebase" className="tech-icon" />
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/firebase.svg" alt="Firebase" className="tech-icon tech-icon-firebase" />
                         Firebase
                       </span>
                       <span className="tech-tag">
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/pocketbase.svg" alt="PocketBase" className="tech-icon tech-icon-pocketbase" />
                         PocketBase
                       </span>
                     </div>
                   </div>
                   <div className="tech-category">
-                    <h3>Mobile</h3>
+                    <h3>Mobile Development</h3>
                     <div className="tech-tags">
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/flutter.svg" alt="Flutter" className="tech-icon" />
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/flutter.svg" alt="Flutter" className="tech-icon tech-icon-flutter" />
                         Flutter
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/dart.svg" alt="Dart" className="tech-icon" />
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/dart.svg" alt="Dart" className="tech-icon tech-icon-dart" />
                         Dart
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/react.svg" alt="React Native" className="tech-icon" />
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/react.svg" alt="React Native" className="tech-icon tech-icon-react" />
                         React Native
                       </span>
                       <span className="tech-tag">
-                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/expo.svg" alt="Expo" className="tech-icon" />
+                        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/expo.svg" alt="Expo" className="tech-icon tech-icon-expo" />
                         Expo
                       </span>
                     </div>
