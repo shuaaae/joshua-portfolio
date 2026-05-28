@@ -36,4 +36,3 @@ jobs:
         source: "dist/"
         target: "/www/wwwroot/joshuagodalle.site/"
         strip_components: 1
-        rm: true
