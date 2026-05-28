@@ -115,7 +115,6 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
             )
             if (generateContentModel) {
               availableModel = generateContentModel.name.replace('models/', '')
-              console.log('Found available model:', availableModel)
             }
           }
         }
@@ -139,11 +138,9 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
           const response = await result.response
           text = response.text()
           lastError = null
-          console.log(`Successfully used model: ${modelName}`)
           break // Success, exit the loop
         } catch (err) {
           lastError = err instanceof Error ? err : new Error(String(err))
-          console.log(`Model ${modelName} failed:`, err)
 
           // If SDK fails, try direct REST API as fallback
           if (err instanceof Error && err.message.includes('404')) {
@@ -168,12 +165,11 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
                 if (restData.candidates && restData.candidates[0]?.content?.parts?.[0]?.text) {
                   text = restData.candidates[0].content.parts[0].text
                   lastError = null
-                  console.log(`Successfully used model via REST API: ${modelName}`)
                   break
                 }
               }
-            } catch (restErr) {
-              console.log(`REST API fallback also failed for ${modelName}`)
+            } catch {
+              // REST API fallback failed
             }
           }
           continue // Try next model
