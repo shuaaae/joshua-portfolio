@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   HiMail,
   HiBriefcase,
@@ -21,11 +21,13 @@ import joshuaIcon from '/joshua-icon.jpeg'
 import Chatbot from './components/Chatbot'
 import './App.css'
 
+
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
     const stored = localStorage.getItem('theme')
     return stored === 'dark'
   })
+  const toggleRef = useRef<HTMLDivElement>(null)
   const [isProfileHovered, setIsProfileHovered] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [profileClickedIcon, setProfileClickedIcon] = useState(false)
@@ -235,7 +237,40 @@ function App() {
           </div>
           <div
             className="theme-toggle-wrapper"
-            onClick={() => setDarkMode(!darkMode)}
+            ref={toggleRef}
+            onClick={() => {
+              const btn = toggleRef.current
+              const next = !darkMode
+              if (!btn || !document.startViewTransition) {
+                setDarkMode(next)
+                return
+              }
+              const rect = btn.getBoundingClientRect()
+              const x = rect.left + rect.width / 2
+              const y = rect.top + rect.height / 2
+              const maxR = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+              )
+              const transition = document.startViewTransition!(() => {
+                setDarkMode(next)
+              })
+              transition.ready.then(() => {
+                document.documentElement.animate(
+                  {
+                    clipPath: [
+                      `circle(0px at ${x}px ${y}px)`,
+                      `circle(${maxR}px at ${x}px ${y}px)`
+                    ]
+                  },
+                  {
+                    duration: 500,
+                    easing: 'ease-in-out',
+                    pseudoElement: '::view-transition-new(root)'
+                  }
+                )
+              })
+            }}
             aria-label="Toggle theme"
           >
             <div className={`theme-toggle ${darkMode ? 'dark' : 'light'}`}>
