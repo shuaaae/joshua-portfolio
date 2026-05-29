@@ -1,0 +1,35 @@
+.avatar-stack {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+.avatar-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 16px;
+  transition: opacity 40ms ease-in-out;
+}
+
+.avatar-loading {
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  border-radius: 16px;
+  color: #666;
+  font-size: 14px;
+}

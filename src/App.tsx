@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import {
   HiMail,
   HiBriefcase,
@@ -14,11 +14,9 @@ import {
   HiDocumentText
 } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
-import profileImage from './assets/Profile.jpg'
-import shyImage from './assets/shy-type.png'
 import blueBadge from './assets/blue_badge.png'
-import joshuaIcon from '/joshua-icon.jpeg'
 import Chatbot from './components/Chatbot'
+import AvatarAnimation from './components/AvatarAnimation'
 import './App.css'
 
 
@@ -27,10 +25,7 @@ function App() {
     const stored = localStorage.getItem('theme')
     return stored === 'dark'
   })
-  const toggleRef = useRef<HTMLDivElement>(null)
-  const [isProfileHovered, setIsProfileHovered] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [profileClickedIcon, setProfileClickedIcon] = useState(false)
   const [isChatbotOpen, setIsChatbotOpen] = useState(false)
 
   const allCertificates = [
@@ -190,29 +185,15 @@ function App() {
     localStorage.setItem('theme', theme)
   }, [darkMode])
 
+  // Frame animation handled by AvatarAnimation component
+
   return (
     <div className={`app ${darkMode ? 'dark' : 'light'}`}>
       {/* Header Section */}
       <header className="header">
         <div className="header-content">
           <div className="profile-section">
-            <div
-              className="profile-image"
-              onMouseEnter={() => setIsProfileHovered(true)}
-              onMouseLeave={() => {
-                setIsProfileHovered(false)
-                setProfileClickedIcon(false)
-              }}
-              onClick={() => {
-                if (isProfileHovered) setProfileClickedIcon(true)
-              }}
-            >
-              <img
-                src={isProfileHovered ? (profileClickedIcon ? shyImage : profileImage) : joshuaIcon}
-                alt="Joshua Godalle"
-                className="profile-photo"
-              />
-            </div>
+            <AvatarAnimation darkMode={darkMode} />
             <div className="profile-info">
               <h1 className="name">
                 Joshua Godalle
@@ -237,40 +218,7 @@ function App() {
           </div>
           <div
             className="theme-toggle-wrapper"
-            ref={toggleRef}
-            onClick={() => {
-              const btn = toggleRef.current
-              const next = !darkMode
-              if (!btn || !document.startViewTransition) {
-                setDarkMode(next)
-                return
-              }
-              const rect = btn.getBoundingClientRect()
-              const x = rect.left + rect.width / 2
-              const y = rect.top + rect.height / 2
-              const maxR = Math.hypot(
-                Math.max(x, window.innerWidth - x),
-                Math.max(y, window.innerHeight - y)
-              )
-              const transition = document.startViewTransition!(() => {
-                setDarkMode(next)
-              })
-              transition.ready.then(() => {
-                document.documentElement.animate(
-                  {
-                    clipPath: [
-                      `circle(0px at ${x}px ${y}px)`,
-                      `circle(${maxR}px at ${x}px ${y}px)`
-                    ]
-                  },
-                  {
-                    duration: 500,
-                    easing: 'ease-in-out',
-                    pseudoElement: '::view-transition-new(root)'
-                  }
-                )
-              })
-            }}
+            onClick={() => setDarkMode(!darkMode)}
             aria-label="Toggle theme"
           >
             <div className={`theme-toggle ${darkMode ? 'dark' : 'light'}`}>
@@ -296,7 +244,7 @@ function App() {
                 </h2>
                 <div className="section-text-group">
                   <p className="section-text">
-                    I'm a full-stack developer specializing in developing end-to-end solutions with Laravel, PHP, JavaScript, and Node.js.
+                    I'm a full-stack specializing in developing end-to-end solutions with Laravel, PHP, JavaScript, and Node.js.
                     I work on web applications, building RESTful APIs, creating responsive front-end interfaces, and managing database
                     systems using MySQL and Firebase.
                   </p>

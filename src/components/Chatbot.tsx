@@ -110,7 +110,11 @@ function Chatbot({ isOpen, onClose, darkMode }: ChatbotProps) {
           const data = await response.json()
           if (data.models && data.models.length > 0) {
             // Find a model that supports generateContent
-            const generateContentModel = data.models.find((m: any) =>
+            interface Model {
+              name: string
+              supportedGenerationMethods?: string[]
+            }
+            const generateContentModel = data.models.find((m: Model) =>
               m.supportedGenerationMethods?.includes('generateContent')
             )
             if (generateContentModel) {
