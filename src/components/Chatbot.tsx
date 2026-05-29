@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { HiX, HiArrowRight } from 'react-icons/hi'
-import profileImage from '../assets/Profile.jpg'
+import profileImage from '../assets/frames/wear/frame_041.png'
 
 interface Message {
   role: 'user' | 'assistant'
